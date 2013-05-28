@@ -717,7 +717,7 @@ class HTMLReportCreator(ReportCreator):
 
 		f.write('<h1>GitStats - %s</h1>' % data.projectname)
 
-		self.printNav(f)
+		self.printNav(f, 'general')
 
 		f.write('<dl>')
 		f.write('<dt>Project name</dt><dd>%s</dd>' % (data.projectname))
@@ -739,7 +739,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/activity.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Activity</h1>')
-		self.printNav(f)
+		self.printNav(f, 'activity')
 
 		#f.write('<h2>Last 30 days</h2>')
 
@@ -921,7 +921,7 @@ class HTMLReportCreator(ReportCreator):
 		self.printHeader(f)
 
 		f.write('<h1>Authors</h1>')
-		self.printNav(f)
+		self.printNav(f, 'authors')
 
 		# Authors :: List of authors
 		f.write(html_header(2, 'List of Authors'))
@@ -1033,7 +1033,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/files.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Files</h1>')
-		self.printNav(f)
+		self.printNav(f, 'files')
 
 		f.write('<dl>\n')
 		f.write('<dt>Total files</dt><dd>%d</dd>' % data.getTotalFiles())
@@ -1084,7 +1084,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/lines.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Lines</h1>')
-		self.printNav(f)
+		self.printNav(f, 'lines')
 
 		f.write('<dl>\n')
 		f.write('<dt>Total lines</dt><dd>%d</dd>' % data.getTotalLOC())
@@ -1106,7 +1106,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/tags.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Tags</h1>')
-		self.printNav(f)
+		self.printNav(f, 'tags')
 
 		f.write('<dl>')
 		f.write('<dt>Total tags</dt><dd>%d</dd>' % len(data.tags))
@@ -1339,20 +1339,31 @@ plot """
 <div class="container">
 """ % (self.title, conf['style'], getversion()))
 
-	def printNav(self, f):
+	def printNav(self, f, active):
+		general, activity, authors, files, lines, tags = "", "", "", "", "", ""
+		if active == "general":
+			general = 'class="active"'
+		elif active == "activity":
+			activity = 'class="active"'
+		elif active == "authors":
+			authors = 'class="active"'
+		elif active == "files":
+			files = 'class="active"'
+		elif active == "lines":
+			lines = 'class="active"'
+		elif active == "tags":
+			tags = 'class="active"'
 		f.write("""
-<div class="nav">
-<ul>
-<li><a href="index.html">General</a></li>
-<li><a href="activity.html">Activity</a></li>
-<li><a href="authors.html">Authors</a></li>
-<li><a href="files.html">Files</a></li>
-<li><a href="lines.html">Lines</a></li>
-<li><a href="tags.html">Tags</a></li>
+<ul class="nav nav-tabs">
+<li %s><a href="index.html">General</a></li>
+<li %s><a href="activity.html">Activity</a></li>
+<li %s><a href="authors.html">Authors</a></li>
+<li %s><a href="files.html">Files</a></li>
+<li %s><a href="lines.html">Lines</a></li>
+<li %s><a href="tags.html">Tags</a></li>
 </ul>
-</div>
-""")
-		
+""" % (general, activity, authors, files, lines, tags))
+
 
 class GitStats:
 	def run(self, args_orig):
